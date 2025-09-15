@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "./utils/constants";
 import { addPosts } from "./utils/postSlice";
 import { addLike } from "./utils/likeSlice";
+import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
   const dispatch = useDispatch();
   const posts = useSelector((store) => store.post);
-  const [likedPosts, setLikedPosts] = useState({}); // track likes locally
+  const connections=useSelector(store=>store.connection)
+  const [likedPosts, setLikedPosts] = useState({}); 
+  const navigate=useNavigate()
 
   const fetchPosts = async () => {
     try {
@@ -41,6 +44,9 @@ const Feed = () => {
       console.error("Like error:", err);
     }
   };
+  const goToSuggestion=()=>{
+    navigate('/suggestions')
+  }
 
   useEffect(() => {
     fetchPosts();
@@ -51,6 +57,12 @@ const Feed = () => {
       {posts.length === 0 && (
         <p className="text-center text-gray-500">No posts to show</p>
       )}
+
+      {
+        connections.length===0 && posts.length===0 && (
+          <button className="bg-blue-500 text-white p-2 rounded-xl  cursor-pointer mx-auto block transition" onClick={goToSuggestion}>Go to Suggestion Page</button>
+        )
+      }
 
       {posts.map((post) => (
         <div

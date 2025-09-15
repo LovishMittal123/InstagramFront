@@ -10,12 +10,14 @@ import { removeUser } from "./utils/userSlice";
 const Profile = () => {
   const user = useSelector((store) => store.user);
   const posts = useSelector((store) => store.post);
-  const [show, setShow] = useState(null); // store ID instead of boolean
+  const [show, setShow] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const goToEdit=()=>{
-    navigate('/editProfile')
-  }
+
+  const goToEdit = () => {
+    navigate("/editProfile");
+  };
+
   const goOnPosts = () => {
     navigate("/createpost");
   };
@@ -37,34 +39,32 @@ const Profile = () => {
 
   const handleDelete = async (id) => {
     try {
-      // delete from backend
       await axios.delete(`${BASE_URL}/posts/${id}`, {
         withCredentials: true,
       });
-
-      // update redux store
       dispatch(removePosts(id));
     } catch (error) {
       console.error("Error deleting post:", error);
     }
   };
-  const handleLogout=async()=>{
+
+  const handleLogout = async () => {
     try {
-      await axios.post(BASE_URL+'/logout',{},{withCredentials:true})
-      dispatch(removeUser())
-      navigate('/login')
+      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      dispatch(removeUser());
+      navigate("/login");
     } catch (error) {
       console.error("Error logging out:", error);
     }
-  }
+  };
 
   return (
-    <div className="flex flex-col items-center mt-8 w-full px-4 md:w-3/4 lg:w-1/2 mx-auto">
+    <div className="flex flex-col items-center mt-8 w-full px-4 md:w-3/4 lg:w-2/3 mx-auto">
       {/* Profile Section */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 p-4 rounded-xl mb-6 w-full border border-gray-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-xl mb-8 w-full border border-gray-200 shadow-sm bg-white">
         {/* Profile Image */}
         <img
-          className="w-24 h-24 rounded-full object-cover border border-gray-300 shadow-sm"
+          className="w-28 h-28 rounded-full object-cover border border-gray-300 shadow-sm"
           src={
             user?.photoUrl ||
             "https://cdn-icons-png.flaticon.com/512/847/847969.png"
@@ -72,69 +72,82 @@ const Profile = () => {
           alt="profile"
         />
 
-        {/* Name + Buttons */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full justify-between">
-          <div>
-            <h1 className="text-xl font-semibold">
-              {user?.firstName} {user?.lastName}
-            </h1>
-          </div>
+        {/* Profile Info + Buttons */}
+        <div className="flex flex-col sm:flex-1 gap-3">
+          <h1 className="text-2xl font-bold">
+            {user?.firstName} {user?.lastName}
+          </h1>
 
-          <div className="flex gap-3">
-            <button className="bg-gray-200 px-4 py-2 rounded-xl hover:bg-gray-300 transition cursor-pointer" onClick={goToEdit}>
-              Edit profile
+          <div className="flex flex-wrap gap-3">
+            <button
+              className="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+              onClick={goToEdit}
+            >
+              Edit Profile
             </button>
             <button
               onClick={goOnPosts}
-              className="bg-blue-500 px-4 py-2 rounded-xl text-white hover:bg-blue-600 transition cursor-pointer"
+              className="bg-blue-500 px-4 py-2 rounded-lg text-white hover:bg-blue-600 transition"
             >
               Create Post
             </button>
+            <button
+              className="bg-red-500 px-4 py-2 rounded-lg text-white hover:bg-red-600 transition"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
           </div>
         </div>
-        <button className="bg-red-500 px-4 py-2 rounded-xl text-white hover:bg-red-600 transition cursor-pointer" onClick={handleLogout}>Logout</button>
       </div>
+
+      {/* Divider */}
+      <hr className="w-full border-gray-300 mb-6" />
 
       {/* Posts Grid */}
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {posts.map((element) => (
-          <div
-            key={element._id}
-            className="relative border border-gray-300 rounded-lg shadow-sm overflow-hidden"
-          >
-            {/* Delete Button */}
-            <button
-              className="absolute top-2 right-2 text-red-500 hover:text-red-700 cursor-pointer z-10"
-              onClick={() => handleDelete(element._id)}
+      {posts.length === 0 ? (
+        <div className="text-gray-500 text-lg mt-6">No posts yet</div>
+      ) : (
+        <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-4">
+          {posts.map((element) => (
+            <div
+              key={element._id}
+              className="relative group border border-gray-200 rounded-lg overflow-hidden"
             >
-              <Trash2 />
-            </button>
+              {/* Delete Button */}
+              <button
+                className="absolute top-2 right-2 text-red-500 hover:text-red-700 z-10"
+                onClick={() => handleDelete(element._id)}
+              >
+                <Trash2 />
+              </button>
 
-            {/* Post Image */}
-            <img
-              onClick={() =>
-                setShow(show === element._id ? null : element._id)
-              }
-              className="w-full aspect-square object-cover cursor-pointer"
-              src={element.imageUrl}
-              alt="post"
-            />
+              {/* Post Image */}
+              <img
+                onClick={() =>
+                  setShow(show === element._id ? null : element._id)
+                }
+                className="w-full aspect-square object-cover cursor-pointer"
+                src={element.imageUrl}
+                alt="post"
+              />
 
-            {/* Post Details */}
-            {show === element._id && (
-              <div className="p-3">
-                <p className="font-semibold">
-                  {element.createdBy.firstName} {element.createdBy.lastName}
-                </p>
-                <p className="text-sm text-gray-700">{element.caption}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {new Date(element.createdAt).toLocaleString()}
-                </p>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+              {/* Overlay Details */}
+              {show === element._id && (
+                <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-end p-4 text-white">
+                  <p className="font-semibold">
+                    {element.createdBy.firstName} {element.createdBy.lastName}
+                  </p>
+                  <p className="text-sm">{element.caption}</p>
+                  <p className="text-xs mt-1">
+                    {new Date(element.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
