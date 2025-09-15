@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { addPosts } from "./utils/postSlice";
+import { addPosts } from "../utils/postSlice";
 import { useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "./utils/constants";
+import { BASE_URL } from "../utils/constants";
 import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {

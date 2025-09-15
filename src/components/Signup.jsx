@@ -1,72 +1,51 @@
+import React, { useState } from "react";
+import { BASE_URL } from "../utils/constants";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { BASE_URL } from "./utils/constants";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { addUser } from "./utils/userSlice";
 
-const EditProfile = () => {
-  const user = useSelector((store) => store.user);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  // State
+const Signup = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [about, setAbout] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
   const [error, setError] = useState("");
 
-  // ✅ Sync state when user changes
-  useEffect(() => {
-    if (user) {
-      setFirstName(user.firstName || "");
-      setLastName(user.lastName || "");
-      setAge(user.age || "");
-      setGender(user.gender || "");
-      setAbout(user.about || "");
-      setPhotoUrl(user.photoUrl || "");
-    }
-  }, [user]);
-
-  const edit = async (e) => {
-    e.preventDefault();
-
-    if (!firstName || !lastName) {
-      return setError("First name and Last name are required");
-    }
-    if (age && (age < 1 || age > 120)) {
-      return setError("Please enter a valid age");
-    }
-
+  const dispatch = useDispatch();
+const navigate=useNavigate()
+  const signup = async (e) => {
+    e.preventDefault(); 
     try {
-      const res = await axios.patch(
-        BASE_URL + "/profile/edit",
-        { firstName, lastName, age, gender, about, photoUrl },
+      const res = await axios.post(
+        BASE_URL + "/signup",
+        { firstName, lastName, email, password, age, gender, about, photoUrl },
         { withCredentials: true }
       );
 
-      dispatch(addUser(res.data.data));
-      navigate("/profile");
+      console.log("Signup success:", res.data.data);
+      dispatch(addUser(res.data.data)); 
+      navigate('/')
     } catch (err) {
+      setError(err.response?.data?.message || "Something went wrong");
       console.error(err);
-      setError("Something went wrong. Try again!");
     }
   };
-
-  if (!user) {
-    return <p className="text-center mt-10">Loading profile...</p>;
+  const goToLogin=()=>{
+    navigate('/login')
   }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form
-        onSubmit={edit}
+        onSubmit={signup} 
         className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">Edit Profile</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Signup</h2>
 
         {error && (
           <p className="text-red-500 text-sm mb-2 text-center">{error}</p>
@@ -86,6 +65,22 @@ const EditProfile = () => {
           className="w-full p-2 mb-3 border rounded-lg"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
+        />
+
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-2 mb-3 border rounded-lg"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full p-2 mb-3 border rounded-lg"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <input
@@ -127,11 +122,12 @@ const EditProfile = () => {
           type="submit"
           className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition cursor-pointer"
         >
-          Save Profile
+          Signup
         </button>
+        <p className="text-center text-blue-500 cursor-pointer" onClick={goToLogin}>Already Signed up? Go to Login</p>
       </form>
     </div>
   );
 };
 
-export default EditProfile;
+export default Signup;

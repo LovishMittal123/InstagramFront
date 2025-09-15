@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect } from "react";
-import { BASE_URL } from "./utils/constants";
+import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { setSuggestions } from "./utils/suggestionsSlice";
+import { setSuggestions } from "../utils/suggestionsSlice";
 
 const Suggestions = () => {
   const dispatch = useDispatch();

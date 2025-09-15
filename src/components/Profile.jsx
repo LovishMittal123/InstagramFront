@@ -2,10 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "./utils/constants";
-import { addPosts, removePosts } from "./utils/postSlice";
+import { BASE_URL } from "../utils/constants";
+import { addPosts, removePosts } from "../utils/postSlice";
 import { Trash2 } from "lucide-react";
-import { removeUser } from "./utils/userSlice";
+import { removeUser } from "../utils/userSlice";
 
 const Profile = () => {
   const user = useSelector((store) => store.user);

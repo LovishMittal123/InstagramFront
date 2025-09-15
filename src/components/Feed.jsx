@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BASE_URL } from "./utils/constants";
-import { addPosts } from "./utils/postSlice";
-import { addLike } from "./utils/likeSlice";
+import { BASE_URL } from "../utils/constants";
+import { addPosts } from "../utils/postSlice";
+import { addLike } from "../utils/likeSlice";
 import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
