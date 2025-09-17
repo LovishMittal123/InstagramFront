@@ -108,11 +108,11 @@ const Profile = () => {
       {posts.length === 0 ? (
         <div className="text-gray-500 text-lg mt-6">No posts yet</div>
       ) : (
-        <div className="w-full grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1 gap-4">
           {posts.map((element) => (
             <div
               key={element._id}
-              className="relative group border border-gray-200 rounded-lg overflow-hidden"
+              className="relative border border-gray-200 rounded-lg overflow-hidden bg-white"
             >
               {/* Delete Button */}
               <button
@@ -132,14 +132,14 @@ const Profile = () => {
                 alt="post"
               />
 
-              {/* Overlay Details */}
+              {/* Caption Below Image */}
               {show === element._id && (
-                <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col justify-end p-4 text-white">
+                <div className="p-3 border-t border-gray-200 text-sm">
                   <p className="font-semibold">
                     {element.createdBy.firstName} {element.createdBy.lastName}
                   </p>
-                  <p className="text-sm">{element.caption}</p>
-                  <p className="text-xs mt-1">
+                  <p>{element.caption}</p>
+                  <p className="text-xs text-gray-500 mt-1">
                     {new Date(element.createdAt).toLocaleString()}
                   </p>
                 </div>

@@ -13,6 +13,7 @@ import Suggestions from './components/Suggestions'
 import Requests from './components/Requests'
 import Connections from './components/Connections'
 import EditProfile from './components/EditProfile'
+import Chat from './components/Chat'
 
 const App = () => {
   
@@ -31,6 +32,7 @@ const App = () => {
         <Route path='/requests' element={<Requests/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
+        <Route path='/chat/:targetUserId' element={<Chat/>}/>
 
         </Route>
       </Routes>
