@@ -41,7 +41,7 @@ const Chat = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/chat/${userId}/${targetUserId}`);
+        const res = await axios.get(`${BASE_URL}/chat/${userId}/${targetUserId}`,{withCredentials:true});
         setMessages(res.data);
       } catch (err) {
         console.error("Error fetching messages", err);
