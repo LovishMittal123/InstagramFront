@@ -27,6 +27,7 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="hidden md:flex gap-6 items-center">
+            <Link to='/search'>Search</Link>
             <Link to="/requests" className="relative">
               Requests
               {requests?.length > 0 && (

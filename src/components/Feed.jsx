@@ -9,9 +9,9 @@ import { useNavigate } from "react-router-dom";
 const Feed = () => {
   const dispatch = useDispatch();
   const posts = useSelector((store) => store.post);
-  const connections=useSelector(store=>store.connection)
-  const [likedPosts, setLikedPosts] = useState({}); 
-  const navigate=useNavigate()
+  const connections = useSelector((store) => store.connection);
+  const [likedPosts, setLikedPosts] = useState({});
+  const navigate = useNavigate();
 
   const fetchPosts = async () => {
     try {
@@ -32,10 +32,8 @@ const Feed = () => {
         { withCredentials: true }
       );
 
-     
       dispatch(addLike({ postId: id, likes: res.data.likes }));
 
-      // ✅ update local liked state (toggle)
       setLikedPosts((prev) => ({
         ...prev,
         [id]: !prev[id],
@@ -44,9 +42,15 @@ const Feed = () => {
       console.error("Like error:", err);
     }
   };
-  const goToSuggestion=()=>{
-    navigate('/suggestions')
-  }
+
+  const goToSuggestion = () => {
+    navigate("/suggestions");
+  };
+
+  // 👇 New function to handle navigating to a user's profile
+  const goToUserProfile = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
 
   useEffect(() => {
     fetchPosts();
@@ -58,11 +62,14 @@ const Feed = () => {
         <p className="text-center text-gray-500">No posts to show</p>
       )}
 
-      {
-        connections.length===0 && posts.length===0 && (
-          <button className="bg-blue-500 text-white p-2 rounded-xl  cursor-pointer mx-auto block transition" onClick={goToSuggestion}>Go to Suggestion Page</button>
-        )
-      }
+      {connections.length === 0 && posts.length === 0 && (
+        <button
+          className="bg-blue-500 text-white p-2 rounded-xl cursor-pointer mx-auto block transition"
+          onClick={goToSuggestion}
+        >
+          Go to Suggestion Page
+        </button>
+      )}
 
       {posts.map((post) => (
         <div
@@ -70,7 +77,10 @@ const Feed = () => {
           className="bg-white rounded-2xl shadow-sm overflow-hidden"
         >
           {/* Post Header */}
-          <div className="flex items-center gap-3 p-4">
+          <div
+            className="flex items-center gap-3 p-4 cursor-pointer"
+            onClick={() => goToUserProfile(post.createdBy._id)}
+          >
             <img
               src={post.createdBy.photoUrl}
               alt="profile"
@@ -110,7 +120,10 @@ const Feed = () => {
 
           {/* Caption */}
           <div className="p-4 flex gap-2 items-center">
-            <p className="font-semibold">
+            <p
+              className="font-semibold cursor-pointer"
+              onClick={() => goToUserProfile(post.createdBy._id)}
+            >
               {post.createdBy.firstName} {post.createdBy.lastName}
             </p>
             <p className="text-gray-800">{post.caption}</p>

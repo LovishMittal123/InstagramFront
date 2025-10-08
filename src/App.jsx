@@ -14,7 +14,8 @@ import Requests from './components/Requests'
 import Connections from './components/Connections'
 import EditProfile from './components/EditProfile'
 import Chat from './components/Chat'
-
+import SearchBar from './components/SeachBar'
+import ProfilePage from './components/ProfilePage'
 const App = () => {
   
   return (
@@ -33,6 +34,8 @@ const App = () => {
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
         <Route path='/chat/:targetUserId' element={<Chat/>}/>
+        <Route path='/search' element={<SearchBar/>}/>
+        <Route path='/profile/:userId' element={<ProfilePage/>}/>
 
         </Route>
       </Routes>
