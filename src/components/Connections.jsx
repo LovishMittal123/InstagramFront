@@ -38,15 +38,15 @@ const Connections = () => {
         {connections.map((element) => (
           <div
             key={element._id}
-            onClick={() => goToUserProfile(element._id)} // pass userId
             className="bg-white shadow rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition cursor-pointer"
           >
             <img
               src={element.photoUrl}
+              onClick={() => goToUserProfile(element._id)} 
               alt="user"
               className="w-20 h-20 rounded-full object-cover mb-3 border"
             />
-            <p className="font-medium text-lg">
+            <p className="font-medium text-lg" onClick={() => goToUserProfile(element._id)} >
               {element.firstName} {element.lastName}
             </p>
             <p className="text-sm text-gray-600 mt-1">{element.about}</p>
