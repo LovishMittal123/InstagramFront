@@ -1,15 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const postSlice = createSlice({
-  name: "post",
-  initialState: [], // always array
+  name: "post",   
+  initialState: [], // ✅ make sure it's an array
   reducers: {
     addPosts: (state, action) => {
-      return Array.isArray(action.payload) ? action.payload : [action.payload];
+      return action.payload;
     },
-    removePosts: (state, action) => state.filter(post => post._id !== action.payload)
-  }
+    removePosts: (state, action) => {
+     return state.filter(post => post._id !== action.payload);
+    }
+
+  },
 });
 
-export const { addPosts, removePosts } = postSlice.actions;
+export const { addPosts ,removePosts} = postSlice.actions;
 export default postSlice.reducer;
