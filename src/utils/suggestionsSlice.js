@@ -1,17 +1,14 @@
-// src/utils/suggestionSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const suggestionSlice = createSlice({
   name: "suggestions",
-  initialState: [],
+  initialState: [], // always array
   reducers: {
     setSuggestions: (state, action) => {
-      return action.payload; // replace old suggestions
+      return Array.isArray(action.payload) ? action.payload : [action.payload];
     },
-    clearSuggestions: () => {
-      return [];
-    },
-  },
+    clearSuggestions: () => []
+  }
 });
 
 export const { setSuggestions, clearSuggestions } = suggestionSlice.actions;
