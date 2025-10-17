@@ -14,7 +14,7 @@ const Suggestions = () => {
         withCredentials: true,
       });
       console.log(res.data);
-      dispatch(setSuggestions(res.data));
+      dispatch(setSuggestions(res.data.data || []));
     } catch (error) {
       console.error("Error fetching suggestions:", error);
     }
