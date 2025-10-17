@@ -17,6 +17,7 @@ const Suggestions = () => {
       });
       // ✅ Make sure we always dispatch an array
       dispatch(setSuggestions(Array.isArray(res.data.data) ? res.data.data : []));
+
     } catch (error) {
       console.error("Error fetching suggestions:", error);
       dispatch(setSuggestions([]));
