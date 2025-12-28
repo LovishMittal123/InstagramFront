@@ -1,4 +1,4 @@
-export const BASE_URL = process.env.REACT_APP_API_URL;
+export const BASE_URL ="https://instagram-front-geuu.vercel.app/";
 // export const BASE_URL = "http://localhost:5000";
 
 
