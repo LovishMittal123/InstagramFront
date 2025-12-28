@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const postSlice = createSlice({
   name: "post",   
-  initialState: [], // ✅ make sure it's an array
+  initialState: [], 
   reducers: {
     addPosts: (state, action) => {
       return action.payload;
