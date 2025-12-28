@@ -10,24 +10,23 @@ import { removeUser } from "../utils/userSlice";
 const Profile = () => {
   const user = useSelector((store) => store.user);
   const posts = useSelector((store) => store.post);
+  const safePosts = Array.isArray(posts) ? posts : [];
+
   const [show, setShow] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const goToEdit = () => {
-    navigate("/editProfile");
-  };
+  const goToEdit = () => navigate("/editProfile");
+  const goOnPosts = () => navigate("/createpost");
 
-  const goOnPosts = () => {
-    navigate("/createpost");
-  };
-
+  // ✅ FIXED: dispatch only posts array
   const fetchPosts = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/posts/me", {
+      const res = await axios.get(`${BASE_URL}/posts/me`, {
         withCredentials: true,
       });
-      dispatch(addPosts(res.data));
+
+      dispatch(addPosts(res.data.posts)); // ✅ IMPORTANT
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -50,7 +49,7 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
       dispatch(removeUser());
       navigate("/login");
     } catch (error) {
@@ -62,7 +61,6 @@ const Profile = () => {
     <div className="flex flex-col items-center mt-8 w-full px-4 md:w-3/4 lg:w-2/3 mx-auto">
       {/* Profile Section */}
       <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-xl mb-8 w-full border border-gray-200 shadow-sm bg-white">
-        {/* Profile Image */}
         <img
           className="w-28 h-28 rounded-full object-cover border border-gray-300 shadow-sm"
           src={
@@ -72,7 +70,6 @@ const Profile = () => {
           alt="profile"
         />
 
-        {/* Profile Info + Buttons */}
         <div className="flex flex-col sm:flex-1 gap-3">
           <h1 className="text-2xl font-bold">
             {user?.firstName} {user?.lastName}
@@ -85,12 +82,14 @@ const Profile = () => {
             >
               Edit Profile
             </button>
+
             <button
               onClick={goOnPosts}
               className="bg-blue-500 px-4 py-2 rounded-lg text-white hover:bg-blue-600 transition"
             >
               Create Post
             </button>
+
             <button
               className="bg-red-500 px-4 py-2 rounded-lg text-white hover:bg-red-600 transition"
               onClick={handleLogout}
@@ -101,15 +100,14 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Divider */}
       <hr className="w-full border-gray-300 mb-6" />
 
       {/* Posts Grid */}
-      {posts.length === 0 ? (
+      {safePosts.length === 0 ? (
         <div className="text-gray-500 text-lg mt-6">No posts yet</div>
       ) : (
-        <div className="w-full grid md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1 gap-4">
-          {posts.map((element) => (
+        <div className="w-full grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {safePosts.map((element) => (
             <div
               key={element._id}
               className="relative border border-gray-200 rounded-lg overflow-hidden bg-white"
@@ -132,11 +130,12 @@ const Profile = () => {
                 alt="post"
               />
 
-              {/* Caption Below Image */}
+              {/* Caption */}
               {show === element._id && (
                 <div className="p-3 border-t border-gray-200 text-sm">
                   <p className="font-semibold">
-                    {element.createdBy.firstName} {element.createdBy.lastName}
+                    {element.createdBy.firstName}{" "}
+                    {element.createdBy.lastName}
                   </p>
                   <p>{element.caption}</p>
                   <p className="text-xs text-gray-500 mt-1">
