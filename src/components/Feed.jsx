@@ -8,23 +8,30 @@ import { useNavigate } from "react-router-dom";
 
 const Feed = () => {
   const dispatch = useDispatch();
-  const postData = useSelector((store) => store.post);
-  const posts=postData?postData:[]
-  const connections = useSelector((store) => store.connection);
-  const [likedPosts, setLikedPosts] = useState({});
   const navigate = useNavigate();
 
+  // Redux state
+  const posts = useSelector((store) => store.post);
+  const connections = useSelector((store) => store.connection);
+
+  // Local state
+  const [likedPosts, setLikedPosts] = useState({});
+
+  // Fetch feed posts
   const fetchPosts = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/user/feed`, {
         withCredentials: true,
       });
-      dispatch(addPosts(res.data));
+
+      // ✅ IMPORTANT: dispatch ONLY the posts array
+      dispatch(addPosts(res.data.posts));
     } catch (err) {
       console.error("Feed fetch error:", err);
     }
   };
 
+  // Like / Unlike post
   const fetchLike = async (id) => {
     try {
       const res = await axios.put(
@@ -44,11 +51,11 @@ const Feed = () => {
     }
   };
 
+  // Navigation helpers
   const goToSuggestion = () => {
     navigate("/suggestions");
   };
 
-  // 👇 New function to handle navigating to a user's profile
   const goToUserProfile = (userId) => {
     navigate(`/profile/${userId}`);
   };
@@ -57,13 +64,16 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
+  // 🛡 Safety: ensure array before map
+  const safePosts = Array.isArray(posts) ? posts : [];
+
   return (
     <div className="max-w-2xl mx-auto mt-6 space-y-6">
-      {posts.length === 0 && (
+      {safePosts.length === 0 && (
         <p className="text-center text-gray-500">No posts to show</p>
       )}
 
-      {connections.length === 0 && posts.length === 0 && (
+      {connections.length === 0 && safePosts.length === 0 && (
         <button
           className="bg-blue-500 text-white p-2 rounded-xl cursor-pointer mx-auto block transition"
           onClick={goToSuggestion}
@@ -72,7 +82,7 @@ const Feed = () => {
         </button>
       )}
 
-      {posts.map((post) => (
+      {safePosts.map((post) => (
         <div
           key={post._id}
           className="bg-white rounded-2xl shadow-sm overflow-hidden"
@@ -106,7 +116,7 @@ const Feed = () => {
             />
           )}
 
-          {/* Like Button */}
+          {/* Like Section */}
           <div className="flex items-center gap-3 px-5 py-2">
             <p
               className="text-4xl cursor-pointer select-none"
