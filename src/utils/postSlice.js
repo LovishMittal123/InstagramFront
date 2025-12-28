@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const postSlice = createSlice({
   name: "post",   
   initialState: [], 
+  //HI
   reducers: {
     addPosts: (state, action) => {
       return action.payload;
