@@ -59,11 +59,11 @@ const Feed = () => {
 
   return (
     <div className="max-w-2xl mx-auto mt-6 space-y-6">
-      {posts?.length === 0 && (
+      {posts.length === 0 && (
         <p className="text-center text-gray-500">No posts to show</p>
       )}
 
-      {connections.length === 0 && posts?.length === 0 && (
+      {connections.length === 0 && posts.length === 0 && (
         <button
           className="bg-blue-500 text-white p-2 rounded-xl cursor-pointer mx-auto block transition"
           onClick={goToSuggestion}
@@ -72,7 +72,7 @@ const Feed = () => {
         </button>
       )}
 
-      {posts?.map((post) => (
+      {posts.map((post) => (
         <div
           key={post._id}
           className="bg-white rounded-2xl shadow-sm overflow-hidden"
