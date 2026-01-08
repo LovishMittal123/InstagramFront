@@ -26,7 +26,7 @@ const Profile = () => {
         withCredentials: true,
       });
 
-      dispatch(addPosts(res.data.posts)); // ✅ IMPORTANT
+      dispatch(addPosts(res.data)); // ✅ IMPORTANT
     } catch (error) {
       console.error("Error fetching posts:", error);
     }

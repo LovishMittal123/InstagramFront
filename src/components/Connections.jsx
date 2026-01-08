@@ -31,30 +31,46 @@ const Connections = () => {
   }, []);
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4 text-center">My Connections</h2>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-6 text-center text-slate-800 dark:text-slate-100">My Connections</h2>
 
       <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {connections.map((element) => (
+        {connections?.map((element) => (
           <div
             key={element._id}
-            className="bg-white shadow rounded-xl p-4 flex flex-col items-center text-center hover:shadow-md transition cursor-pointer"
+            className="relative bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm rounded-2xl p-5 flex flex-col items-center text-center hover:shadow-lg hover:scale-[1.02] transition-transform duration-200 cursor-pointer"
+            onClick={() => goToUserProfile(element._id)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && goToUserProfile(element._id)}
           >
-            <img
-              src={element.photoUrl}
-              onClick={() => goToUserProfile(element._id)} 
-              alt="user"
-              className="w-20 h-20 rounded-full object-cover mb-3 border"
-            />
-            <p className="font-medium text-lg" onClick={() => goToUserProfile(element._id)} >
-              {element.firstName} {element.lastName}
-            </p>
-            <p className="text-sm text-gray-600 mt-1">{element.about}</p>
-            <Link to={"/chat/" + element._id}>
-              <button className="bg-blue-500 text-white px-10 py-2 mt-4 rounded-2xl cursor-pointer">
-                Chat
+            <div className="flex items-center justify-center w-24 h-24 rounded-full overflow-hidden ring-2 ring-sky-400 shadow-md mb-3">
+              <img
+                src={element.photoUrl || 'https://via.placeholder.com/150'}
+                alt={`${element.firstName} ${element.lastName}`}
+                className="w-full h-full object-cover"
+                onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150')}
+              />
+            </div>
+
+            <p className="font-semibold text-lg text-slate-900 dark:text-slate-50 truncate w-full">{element.firstName} {element.lastName}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 w-full">{element.about || 'No bio available'}</p>
+
+            <div className="mt-4 w-full flex gap-3">
+              <Link to={`/chat/${element._id}`} onClick={(e) => e.stopPropagation()} className="flex-1">
+                <button className="w-full bg-sky-600 hover:bg-sky-700 text-white py-2 rounded-lg shadow-sm transition">Chat</button>
+              </Link>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToUserProfile(element._id);
+                }}
+                className="w-1/2 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+              >
+                View
               </button>
-            </Link>
+            </div>
           </div>
         ))}
       </div>

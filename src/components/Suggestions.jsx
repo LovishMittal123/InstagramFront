@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { setSuggestions } from "../utils/suggestionsSlice";
+import { useNavigate } from "react-router-dom";
 
 const Suggestions = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,12 @@ const Suggestions = () => {
     fetchSuggestions();
   }, []);
 
+  const navigate = useNavigate();
+
+  const viewProfile = (id) => {
+    navigate(`/profile/${id}`);
+  };
+
   if (loading) {
     return <p className="text-center mt-6">Loading suggestions...</p>;
   }
@@ -50,30 +57,46 @@ const Suggestions = () => {
 
   return (
     <div className="w-full px-4 md:px-8 lg:px-16 py-6">
-      <h2 className="text-xl font-semibold mb-4 text-center">Suggestions for you</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {suggestions.map((user) => (
+      <h2 className="text-2xl font-bold mb-6 text-center text-slate-800 dark:text-slate-100">Suggestions for you</h2>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {suggestions?.map((user) => (
           <div
             key={user._id}
-            className="flex flex-col items-center p-4 border rounded-xl shadow-sm hover:shadow-md transition"
+            className="relative bg-white/80 dark:bg-slate-900/70 backdrop-blur-sm rounded-2xl p-5 flex flex-col items-center text-center hover:shadow-lg transition-transform duration-200"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && viewProfile(user._id)}
           >
-            <img
-              src={user.photoUrl || "https://cdn-icons-png.flaticon.com/512/847/847969.png"}
-              alt={user.firstName}
-              className="w-20 h-20 rounded-full object-cover border"
-            />
-            <h1 className="mt-3 text-lg font-medium text-gray-800 text-center">
-              {user.firstName} {user.lastName}
-            </h1>
-            <p className="text-sm text-gray-600 text-center line-clamp-2 mt-1">
-              {user.about || "No bio available"}
-            </p>
-            <button
-              onClick={() => follow(user._id)}
-              className="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition w-full cursor-pointer"
-            >
-              Follow
-            </button>
+            <div className="w-24 h-24 rounded-full overflow-hidden ring-2 ring-sky-400 shadow-md mb-3">
+              <img
+                src={user.photoUrl || 'https://via.placeholder.com/150'}
+                alt={`${user.firstName} ${user.lastName}`}
+                className="w-full h-full object-cover"
+                onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150')}
+              />
+            </div>
+
+            <h3 className="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-50 truncate w-full">{user.firstName} {user.lastName}</h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 line-clamp-2 w-full">{user.about || 'No bio available'}</p>
+
+            <div className="mt-4 w-full flex gap-3">
+              <button
+                onClick={() => follow(user._id)}
+                className="flex-1 bg-sky-600 hover:bg-sky-700 text-white py-2 rounded-lg shadow-sm transition"
+                aria-label={`Follow ${user.firstName}`}
+              >
+                Follow
+              </button>
+
+              <button
+                onClick={() => viewProfile(user._id)}
+                className="w-1/2 bg-transparent border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                aria-label={`View ${user.firstName} profile`}
+              >
+                View
+              </button>
+            </div>
           </div>
         ))}
       </div>

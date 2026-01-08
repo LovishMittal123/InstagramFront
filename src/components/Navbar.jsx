@@ -59,9 +59,10 @@ const Navbar = () => {
             {user ? (
               <Link to="/profile" className="flex items-center gap-2">
                 <img
-                  src={user?.photoUrl || "/default-avatar.png"}
+                  src={user?.photoUrl || "https://via.placeholder.com/150"}
                   alt="Profile"
                   className="w-8 h-8 rounded-full object-cover"
+                  onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150')}
                 />
                 <span className="font-medium hidden sm:inline">
                   {user.firstName} {user.lastName}
@@ -122,9 +123,10 @@ const Navbar = () => {
           {user ? (
             <Link to="/profile" className="flex items-center gap-2">
               <img
-                src={user?.photoUrl || "/default-avatar.png"}
+                src={user?.photoUrl || 'https://via.placeholder.com/150'}
                 alt="Profile"
                 className="w-8 h-8 rounded-full object-cover"
+                onError={(e) => (e.currentTarget.src = 'https://via.placeholder.com/150')}
               />
               <span className="font-medium">
                 {user.firstName} {user.lastName}
