@@ -10,16 +10,14 @@ const EditProfile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // State
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [about, setAbout] = useState("");
-  const [photoUrl, setPhotoUrl] = useState("");
+  const [photo, setPhoto] = useState(null);
   const [error, setError] = useState("");
 
-  // ✅ Sync state when user changes
   useEffect(() => {
     if (user) {
       setFirstName(user.firstName || "");
@@ -27,7 +25,6 @@ const EditProfile = () => {
       setAge(user.age || "");
       setGender(user.gender || "");
       setAbout(user.about || "");
-      setPhotoUrl(user.photoUrl || "");
     }
   }, [user]);
 
@@ -35,17 +32,30 @@ const EditProfile = () => {
     e.preventDefault();
 
     if (!firstName || !lastName) {
-      return setError("First name and Last name are required");
+      return setError("First name and last name are required");
     }
-    if (age && (age < 1 || age > 120)) {
-      return setError("Please enter a valid age");
+
+    const formData = new FormData();
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    formData.append("age", age);
+    formData.append("gender", gender);
+    formData.append("about", about);
+
+    if (photo) {
+      formData.append("photo", photo);
     }
 
     try {
       const res = await axios.patch(
-        BASE_URL + "/profile/edit",
-        { firstName, lastName, age, gender, about, photoUrl },
-        { withCredentials: true }
+        `${BASE_URL}/profile/edit`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
 
       dispatch(addUser(res.data.data));
@@ -65,6 +75,7 @@ const EditProfile = () => {
       <form
         onSubmit={edit}
         className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md"
+        encType="multipart/form-data"
       >
         <h2 className="text-2xl font-bold mb-4 text-center">Edit Profile</h2>
 
@@ -104,7 +115,7 @@ const EditProfile = () => {
           <option value="">Select Gender</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
-          <option value="Others">Other</option>
+          <option value="Others">Others</option>
         </select>
 
         <textarea
@@ -113,14 +124,13 @@ const EditProfile = () => {
           className="w-full p-2 mb-3 border rounded-lg"
           value={about}
           onChange={(e) => setAbout(e.target.value)}
-        ></textarea>
+        />
 
         <input
-          type="text"
-          placeholder="Photo URL"
-          className="w-full p-2 mb-3 border rounded-lg"
-          value={photoUrl}
-          onChange={(e) => setPhotoUrl(e.target.value)}
+          type="file"
+          accept="image/*"
+          className="w-full p-2 mb-4 border rounded-lg"
+          onChange={(e) => setPhoto(e.target.files[0])}
         />
 
         <button
