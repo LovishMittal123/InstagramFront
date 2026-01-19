@@ -18,18 +18,6 @@ const ProfilePage = () => {
 
   const navigate = useNavigate()
 
-  const isFollowing = Boolean(
-    // common API flags
-    user?.isFollowing || user?.followedByCurrentUser || user?.isFriend || user?.isConnected ||
-    // status fields
-    user?.followStatus === 'following' || user?.status === 'connected' ||
-    // fallback: match by id (string-safe)
-    (Array.isArray(connections) && connections.some(c => String(c._id) === String(userId)))
-  )
-
-  // Update
-
-  // Fetch user profile and posts
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -64,23 +52,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {!isFollowing ? (
-            <>
-              <button
-                onClick={() => navigate(`/chat/${userId}`)}
-                className="inline-flex items-center gap-2 bg-sky-600 text-white px-4 py-2 rounded-full shadow hover:bg-sky-700 transition"
-                aria-label={`Open chat with ${user.firstName}`}
-              >
-                Message
-              </button>
-
-              <button className="inline-flex items-center gap-2 bg-transparent border border-slate-300 text-slate-700 px-4 py-2 rounded-full shadow hover:bg-slate-100 transition">Follow</button>
-            </>
-          ) : (
-            <span className="text-sm text-slate-500">Following</span>
-          )}
-        </div>
+    
       </div>
 
       {/* Posts Section */}
